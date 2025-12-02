@@ -1,11 +1,9 @@
 package etats;
 
 import statistiques.Bilan;
-
 import java.awt.Color;
 import java.awt.Dimension;
 import java.util.Random;
-
 import roles.IndividuSexue;
 import roles.Ouvriere;
 import roles.Role;
@@ -33,7 +31,6 @@ public class Adulte extends Etat {
 	public Adulte(Role role) {
 		this.role = role;
 	}
-	
 	public void setRole(Role role) {
 		this.role = role;
 	}
