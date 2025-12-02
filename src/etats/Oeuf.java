@@ -1,5 +1,7 @@
 package etats;
 
+import statistiques.Bilan;
+
 import java.awt.Color;
 import java.awt.Dimension;
 
@@ -17,5 +19,10 @@ public class Oeuf extends Etat{
 		vue.setDimension(new Dimension(3, 3));
 	}
 	
+	
+	@Override
+	public void bilan(Bilan bilan) {
+	    bilan.incr("Oeuf", 1);
+	}
 	
 }

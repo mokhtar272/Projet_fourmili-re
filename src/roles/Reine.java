@@ -1,6 +1,8 @@
 package roles;
 
 
+import statistiques.Bilan;
+
 import java.util.Random;
 
 import etats.Oeuf;
@@ -22,6 +24,11 @@ public class Reine extends Role{
 			contexte.getFourmiliere().ponte(oeuf);
 			contexte.getSimulation().nouvelIndividu(oeuf);
 		}
+	}
+	
+	@Override
+	public void bilan(Bilan bilan) {
+	    bilan.incr("Reine", 1);
 	}
 
 }

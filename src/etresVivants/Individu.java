@@ -1,6 +1,7 @@
 package etresVivants;
 
 import java.awt.Color;
+import statistiques.Bilan;
 import java.awt.Dimension;
 import java.awt.Point;
 
@@ -46,4 +47,8 @@ public abstract class Individu {
 	public void etapeDeSimulation(ContexteDeSimulation contexte) {
 		contexte.setIndividu(this);
 	}
+	/**
+	 * Méthode abstraite pour contribuer au bilan
+	 */
+	public abstract void bilan(Bilan bilan);
 }

@@ -1,5 +1,8 @@
 package roles;
 
+
+import statistiques.Bilan;
+
 import java.util.Random;
 
 import etresVivants.Sexe;
@@ -37,5 +40,8 @@ public class IndividuSexue extends Role {
 	}
 
 
-	
+	@Override
+	public void bilan(Bilan bilan) {
+	    bilan.incr("IndividuSexue", 1);
+	}
 }

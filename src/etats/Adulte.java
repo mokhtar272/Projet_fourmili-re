@@ -1,5 +1,7 @@
 package etats;
 
+import statistiques.Bilan;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.util.Random;
@@ -46,6 +48,11 @@ public class Adulte extends Etat {
 	public void initialise(VueIndividu vue ) {
 		vue.setBackground(Color.blue);
 		vue.setDimension(new Dimension(3, 3));
+	}
+	
+	@Override
+	public void bilan(Bilan bilan) {
+	    this.role.bilan(bilan); // Délègue au rôle
 	}
 
 	

@@ -7,6 +7,8 @@ import java.util.Random;
 import etresVivants.Fourmi;
 import vue.ContexteDeSimulation;
 
+import statistiques.Bilan;
+
 public class Ouvriere extends Role {
 
 	public Ouvriere() {
@@ -38,6 +40,11 @@ public class Ouvriere extends Role {
 			}
 		}
 		fourmi.setPos(new Point(x,y));
+	}
+	
+	@Override
+	public void bilan(Bilan bilan) {
+	    bilan.incr("Ouvriere", 1);
 	}
 
 }

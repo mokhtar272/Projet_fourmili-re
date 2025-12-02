@@ -1,4 +1,5 @@
 package etats;
+import statistiques.Bilan;
 
 
 
@@ -8,4 +9,6 @@ import vue.VueIndividu;
 public abstract class Etat {
 	public abstract void etapeDeSimulation(ContexteDeSimulation contexte);
 	public abstract void initialise(VueIndividu vue );
+	
+	public abstract void bilan(Bilan bilan);
 }

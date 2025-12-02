@@ -1,6 +1,8 @@
 package etats;
 
 
+import statistiques.Bilan;
+
 import java.awt.Color;
 import java.awt.Dimension;
 
@@ -19,4 +21,8 @@ public class Larve extends Etat{
 	}
 
 	
+	@Override
+	public void bilan(Bilan bilan) {
+	    bilan.incr("Larve", 1);
+	}
 }

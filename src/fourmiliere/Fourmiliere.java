@@ -1,5 +1,10 @@
 package fourmiliere;
 
+
+
+import java.util.Iterator;
+import statistiques.Bilan;
+
 import java.awt.Point;
 import java.awt.Dimension;
 import java.util.ArrayList;
@@ -41,6 +46,38 @@ public class Fourmiliere {
 		for (Fourmi fourmi : mesFourmis) {
 			fourmi.etapeDeSimulation(contexte);
 		}
+	}
+	
+	
+	
+	/**
+	 * Calcule le bilan de toute la population
+	 */
+	public void bilan(Bilan bilan) {
+	    Iterator<Fourmi> itor = this.population.iterator();
+	    while (itor.hasNext()) {
+	        itor.next().bilan(bilan);
+	    }
+	}
+
+	/**
+	 * Compte le nombre de nymphes
+	 */
+	public int compterNymphes() {
+	    int count = 0;
+	    for (Fourmi fourmi : population) {
+	        if (fourmi.getEtat().getClass().getSimpleName().equals("Nymphe")) {
+	            count++;
+	        }
+	    }
+	    return count;
+	}
+
+	/**
+	 * Retourne la taille de la population
+	 */
+	public int getTaillePopulation() {
+	    return this.population.size();
 	}
 		
 }

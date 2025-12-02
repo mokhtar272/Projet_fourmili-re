@@ -1,6 +1,8 @@
 package etresVivants;
+import statistiques.Bilan;
 
 import java.awt.Color;
+
 import java.awt.Dimension;
 import java.awt.Point;
 
@@ -83,6 +85,13 @@ public class Fourmi extends Individu {
 		super.etapeDeSimulation(contexte);
 		this.evolution();
 		this.etat.etapeDeSimulation(contexte);
+	}
+	
+	/**
+	 * Contribue aux statistiques du bilan
+	 */
+	public void bilan(Bilan bilan) {
+	    this.etat.bilan(bilan);
 	}
 
 }
