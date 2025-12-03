@@ -1,26 +1,23 @@
 package roles;
 
 import java.awt.Point;
+import java.awt.Dimension;
 import java.util.Random;
+
 import etresVivants.Fourmi;
 import fourmiliere.Fourmiliere;
 import statistiques.Bilan;
 import vue.ContexteDeSimulation;
 
-/**
- * Rôle Ouvrière : chasse, nourrit, construit
- * Contrainte : ne sort jamais du territoire (200m autour de la fourmilière)
- */
 public class Ouvriere extends Role {
-    
-    // Rayon maximum autour de la fourmilière (en pixels)
-    // 200 mètres dans la simulation
-    private static final int RAYON_TERRITOIRE = 200;
-    
     private Random random;
+    private int tempsExterieur; // en étapes
+    private boolean enChasse;
     
     public Ouvriere() {
         this.random = new Random();
+        this.tempsExterieur = 0;
+        this.enChasse = false;
     }
     
     @Override
@@ -28,100 +25,113 @@ public class Ouvriere extends Role {
         Fourmi fourmi = (Fourmi) contexte.getIndividu();
         Fourmiliere fourmiliere = contexte.getFourmiliere();
         
-        if (fourmiliere == null) {
-            return; // Pas de fourmilière, pas de déplacement
+        if (fourmiliere == null) return;
+        
+        // Vérifier si on est à l'extérieur
+        boolean estExterieur = estHorsFourmiliere(fourmi, fourmiliere);
+        
+        if (estExterieur) {
+            tempsExterieur++;
+            // Vérifier épuisement
+            if (tempsExterieur > 72) { // 12h en étapes de 10 min
+                fourmi.setEtat(new etats.Mort());
+                return;
+            }
+        } else {
+            tempsExterieur = 0;
         }
         
-        // Position actuelle
+        // Si on porte une proie, retour à la fourmilière
+        if (fourmi.porteProie()) {
+            retourFourmiliere(fourmi, fourmiliere);
+        } else {
+            // Sinon, déplacement aléatoire dans les limites
+            deplacerAvecLimites(fourmi, fourmiliere, contexte);
+            
+            // Vérifier si on trouve une proie
+            if (!enChasse && random.nextDouble() < 0.1) {
+                enChasse = true;
+            }
+        }
+    }
+    
+    private boolean estHorsFourmiliere(Fourmi fourmi, Fourmiliere fourmiliere) {
+        Point pos = fourmi.getPos();
+        Point posFourmiliere = fourmiliere.getPos();
+        Dimension dim = fourmiliere.getDimension();
+        
+        return (pos.x < posFourmiliere.x || 
+                pos.x > posFourmiliere.x + dim.width ||
+                pos.y < posFourmiliere.y || 
+                pos.y > posFourmiliere.y + dim.height);
+    }
+    
+    private void deplacerAvecLimites(Fourmi fourmi, Fourmiliere fourmiliere, ContexteDeSimulation contexte) {
         int x = fourmi.getPos().x;
         int y = fourmi.getPos().y;
         
         // Centre de la fourmilière
-        Point centreFourmiliere = new Point(
+        Point centre = new Point(
             fourmiliere.getPos().x + fourmiliere.getDimension().width / 2,
             fourmiliere.getPos().y + fourmiliere.getDimension().height / 2
         );
         
-        // Tentative de déplacement aléatoire
+        // Rayon maximal (200 mètres = 200 pixels)
+        int rayonMax = 200;
+        
         int direction = random.nextInt(4);
-        int nouveauX = x;
-        int nouveauY = y;
+        int newX = x;
+        int newY = y;
         
         switch (direction) {
-            case 0: // Haut
-                nouveauY = y - 1;
-                break;
-            case 1: // Droite
-                nouveauX = x + 1;
-                break;
-            case 2: // Bas
-                nouveauY = y + 1;
-                break;
-            case 3: // Gauche
-                nouveauX = x - 1;
-                break;
+            case 0: newY--; break; // Haut
+            case 1: newX++; break; // Droite
+            case 2: newY++; break; // Bas
+            case 3: newX--; break; // Gauche
         }
         
-        // Vérifie si la nouvelle position est dans le territoire
-        double distance = calculerDistance(nouveauX, nouveauY,
-                                           centreFourmiliere.x, centreFourmiliere.y);
+        // Vérifier si dans le rayon autorisé
+        double distance = Math.sqrt(Math.pow(newX - centre.x, 2) + Math.pow(newY - centre.y, 2));
         
-        if (distance <= RAYON_TERRITOIRE) {
-            // Position valide, on déplace
-            fourmi.setPos(new Point(nouveauX, nouveauY));
-        } else {
-            // Hors territoire : on se rapproche de la fourmilière
-            deplacerVersCentre(fourmi, centreFourmiliere);
+        if (distance <= rayonMax) {
+            // Vérifier aussi les limites du terrain
+            Dimension dimTerrain = contexte.getTerrain().getDimension();
+            Point posTerrain = contexte.getTerrain().getPos();
+            
+            if (newX >= posTerrain.x && newX < posTerrain.x + dimTerrain.width &&
+                newY >= posTerrain.y && newY < posTerrain.y + dimTerrain.height) {
+                
+                fourmi.setPos(new Point(newX, newY));
+            }
         }
     }
     
-    /**
-     * Calcule la distance euclidienne entre deux points
-     */
-    private double calculerDistance(int x1, int y1, int x2, int y2) {
-        int dx = x2 - x1;
-        int dy = y2 - y1;
-        return Math.sqrt(dx * dx + dy * dy);
-    }
-    
-    /**
-     * Déplace la fourmi d'un pas vers le centre de la fourmilière
-     */
-    private void deplacerVersCentre(Fourmi fourmi, Point centre) {
-        int x = fourmi.getPos().x;
-        int y = fourmi.getPos().y;
-        
-        // Direction vers le centre
-        if (x < centre.x) {
-            x++;
-        } else if (x > centre.x) {
-            x--;
-        }
-        
-        if (y < centre.y) {
-            y++;
-        } else if (y > centre.y) {
-            y--;
-        }
-        
-        fourmi.setPos(new Point(x, y));
-    }
-    
-    /**
-     * Retourne la distance actuelle par rapport au centre
-     * (utile pour debug/stats)
-     */
-    public double getDistanceDuCentre(Fourmi fourmi, Fourmiliere fourmiliere) {
-        Point centreFourmiliere = new Point(
+    private void retourFourmiliere(Fourmi fourmi, Fourmiliere fourmiliere) {
+        Point pos = fourmi.getPos();
+        Point centre = new Point(
             fourmiliere.getPos().x + fourmiliere.getDimension().width / 2,
             fourmiliere.getPos().y + fourmiliere.getDimension().height / 2
         );
-        return calculerDistance(fourmi.getPos().x, fourmi.getPos().y,
-                               centreFourmiliere.x, centreFourmiliere.y);
+        
+        // Se diriger vers le centre
+        int dx = Integer.compare(centre.x, pos.x);
+        int dy = Integer.compare(centre.y, pos.y);
+        
+        fourmi.setPos(new Point(pos.x + dx, pos.y + dy));
+        
+        // Si arrivée à la fourmilière, déposer la proie
+        if (Math.abs(pos.x - centre.x) < 40 && Math.abs(pos.y - centre.y) < 40) {
+            double poidsProie = fourmi.deposerProie();
+            fourmiliere.getStock().ajouterNourriture(poidsProie, true);
+            enChasse = false;
+        }
     }
     
     @Override
     public void bilan(Bilan bilan) {
         bilan.incr("Ouvriere", 1);
+        if (enChasse) {
+            bilan.incr("OuvriereEnChasse", 1);
+        }
     }
 }

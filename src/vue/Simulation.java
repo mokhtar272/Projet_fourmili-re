@@ -19,9 +19,14 @@ import terrain.Terrain;
 public class Simulation {
     NiSpace space = new NiSpace("Simulation Fourmis", new Dimension(800, 800));
     Terrain terrain = new Terrain(new Point(10, 10), new Dimension(700, 700));
+    private int etapeSimulation = 0;  // AJOUTÉ : Compteur d'étapesfinal int niveau_fourmiliere = 1;
     final int niveau_fourmiliere = 1;
     final int niveau_individu = 2;
     final int niveau_proie = 0; // Les proies en arrière-plan
+    private int joursSimules=0;
+    private boolean afficherDetailsStock;
+    private final int ETAPES_PAR_HEURE = 6;  // 6 étapes = 1 heure (10 min par étape)
+    private final int ETAPES_PAR_JOUR = 144; // 24h * 6 = 144 étapes/jour
     
     // Variables pour le bilan
     private Bilan bilan;
@@ -32,8 +37,8 @@ public class Simulation {
     private List<VueProie> vuesProies;
     
     // Configuration affichage
-    private static final int FREQUENCE_BILAN_COURT = 10;      // Tous les 10 jours
-    private static final int FREQUENCE_BILAN_DETAILLE = 50;   // Tous les 50 jours
+    private static final int FREQUENCE_BILAN_COURT = 1;      // Tous les 10 jours
+    private static final int FREQUENCE_BILAN_DETAILLE = 10;   // Tous les 50 jours
     private static final boolean AFFICHER_BILAN_COURT = true;
     private static final boolean AFFICHER_BILAN_DETAILLE = true;
     
@@ -43,11 +48,13 @@ public class Simulation {
         this.nouveauTerrain(terrain);
         this.bilan = new Bilan();
         this.vuesProies = new ArrayList<>();
+        this.joursSimules = 0;
+        this.afficherDetailsStock = true;
         
         System.out.println("╔════════════════════════════════════════════════════╗");
-        System.out.println("║      SIMULATION DE FOURMILIÈRE - PHASE 2          ║");
-        System.out.println("║   Déplacements graphiques + Proies                ║");
-        System.out.println("╚════════════════════════════════════════════════════╝");
+        System.out.println("║   SIMULATION DE FOURMILIÈRE - SYSTÈME COMPLET     ║");
+        System.out.println("║   Phase 3 : Chasse + Phéromones + Nourriture      ║");
+        System.out.println("╚════════════════════════════════════════════════════╝");              
         System.out.println();
     }
     
@@ -115,12 +122,14 @@ public class Simulation {
     /**
      * Calcule et affiche le bilan
      */
+    /**
+     * Calcule et affiche le bilan
+     */
     private void calculerEtAfficherBilan() {
         if (fourmiliereActive == null) {
             return;
         }
         
-        // Réinitialise le bilan
         bilan.clear();
         
         // Calcule les statistiques de la fourmilière
@@ -134,26 +143,11 @@ public class Simulation {
         // Affichage selon configuration
         if (AFFICHER_BILAN_COURT && jourSimulation % FREQUENCE_BILAN_COURT == 0) {
             bilan.afficherBilanCourt(jourSimulation);
-            
-          
         }
         
         if (AFFICHER_BILAN_DETAILLE && jourSimulation % FREQUENCE_BILAN_DETAILLE == 0) {
             bilan.afficherBilan(jourSimulation);
-            afficherStatistiquesProies();
         }
-        
-        // Condition d'arrêt : plus de nymphes (désactivée pour la phase 2)
-        // On laisse tourner indéfiniment pour observer les déplacements
-        
-//        if (jourSimulation > 30 && fourmiliereActive.compterNymphes() == 0) {
-//            System.out.println("\n╔════════════════════════════════════════════════════╗");
-//            System.out.println("║          SIMULATION TERMINÉE                       ║");
-//            System.out.println("╚════════════════════════════════════════════════════╝");
-//            bilan.afficherBilan(jourSimulation);
-//            afficherStatistiquesProies();
-//            System.exit(0);
-//        }
     }
     
     /**
@@ -169,10 +163,32 @@ public class Simulation {
         System.out.println();
     }
     
+    /**
+     * Affiche les statistiques avancées de la fourmilière
+     */
+    private void afficherStatistiquesAvancees() {
+        if (fourmiliereActive != null) {
+            int heure = (etapeSimulation % ETAPES_PAR_JOUR) / ETAPES_PAR_HEURE;
+            int minute = (etapeSimulation % ETAPES_PAR_HEURE) * 10;
+            
+            System.out.printf("[Jour %d - %02dh%02d] Population: %d | Stock: %.1fmg | Proies: %d | Cadavres: %d%n",
+                jourSimulation,
+                heure,
+                minute,
+                fourmiliereActive.getTaillePopulation(),
+                fourmiliereActive.getStock().getQuantite(),
+                fourmiliereActive.getStock().getNombreProies(),
+                fourmiliereActive.getCadavresFourmis());
+        }
+    }
+    
     class GraphicAnimation implements ActionListener {
-        final int graphicAnimationDelay = 10; // 10ms entre chaque frame
+        final int graphicAnimationDelay = 50; // 10ms entre chaque frame
         
         public void actionPerformed(ActionEvent e) {
+            // Incrémente le compteur d'étapes
+            etapeSimulation++;
+            
             // Mise à jour graphique
             Component[] views = Simulation.this.space.getComponents();
             for (int i = 0; i < views.length; i++) {
@@ -186,9 +202,31 @@ public class Simulation {
             // Simulation
             terrain.etapeDeSimulation(new ContexteDeSimulation(Simulation.this));
             
+            
+            
+         // Gestion des jours
+            if (etapeSimulation % ETAPES_PAR_JOUR == 0) {
+                jourSimulation++;
+                if (fourmiliereActive != null) {
+                    fourmiliereActive.incrementerJour();
+                }
+                afficherStatistiquesAvancees();
+            }
+            
             // Bilan (tous les jours)
-            jourSimulation++;
-            calculerEtAfficherBilan();
+            if (etapeSimulation % ETAPES_PAR_JOUR == 0) {
+                calculerEtAfficherBilan();
+            }
+         // Condition d'arrêt
+            if (jourSimulation > 30 && fourmiliereActive != null && 
+                fourmiliereActive.compterNymphes() == 0) {
+                System.out.println("\n╔════════════════════════════════════════════════════╗");
+                System.out.println("║          SIMULATION TERMINÉE                       ║");
+                System.out.println("║  Il ne reste plus de nymphes dans la fourmilière  ║");
+                System.out.println("╚════════════════════════════════════════════════════╝");
+                bilan.afficherBilan(jourSimulation);
+                ((Timer)e.getSource()).stop(); // Arrête l'animation
+            }
         }
         
         public void start() {
