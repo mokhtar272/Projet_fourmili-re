@@ -128,7 +128,7 @@ public class ChasseTest {
         // Reset et test épuisement par temps
         fourmi.setEnergie(1.0);
         fourmi.setDansLaFourmiliere(false);
-        for (int i = 0; i < 600; i++) {
+        for (int i = 0; i < Fourmi.TEMPS_MAX_HORS_FOURMILIERE; i++) {
             fourmi.incrementerTempsHorsFourmiliere();
         }
         assertTrue(fourmi.verifierEpuisement());

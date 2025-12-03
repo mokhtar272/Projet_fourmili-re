@@ -35,7 +35,7 @@ public class Fourmi extends Individu {
 	private boolean dansLaFourmiliere;
 	
 	// Constantes
-	private static final int TEMPS_MAX_HORS_FOURMILIERE = 600; // 10-12h = 600 étapes (si 1 étape = 1 minute)
+	public static final int TEMPS_MAX_HORS_FOURMILIERE = 600; // 10-12h = 600 étapes (si 1 étape = 1 minute)
 	private static final double CONSOMMATION_QUOTIDIENNE_RATIO = 1.0 / 3.0; // 1/3 du poids par jour
 	
 	public Fourmi(Point point) {
@@ -207,11 +207,13 @@ public class Fourmi extends Individu {
     
     /**
      * Diminue l'énergie quotidienne
+     * Appelé à chaque étape de simulation pour simuler la consommation continue
      */
     public void diminuerEnergie() {
         if (etat instanceof Adulte) {
             // Une fourmi consomme 1/3 de son poids par jour
-            double consommation = CONSOMMATION_QUOTIDIENNE_RATIO / 24.0; // Par heure (approximativement)
+            // Si 1 jour = 24 étapes, alors consommation = (1/3) / 24 par étape
+            double consommation = CONSOMMATION_QUOTIDIENNE_RATIO / 24.0;
             this.energie -= consommation;
         }
     }

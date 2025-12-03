@@ -32,10 +32,14 @@ public class DeplacementRetourNid implements StrategieDeplacementStrategy {
                 x++;
             } else if (dx < 0) {
                 x--;
-            } else if (dy > 0) {
-                y++;
-            } else if (dy < 0) {
-                y--;
+            }
+            // Si dx == 0, on bouge verticalement
+            if (dx == 0) {
+                if (dy > 0) {
+                    y++;
+                } else if (dy < 0) {
+                    y--;
+                }
             }
         } else {
             // Priorité verticale
@@ -43,10 +47,14 @@ public class DeplacementRetourNid implements StrategieDeplacementStrategy {
                 y++;
             } else if (dy < 0) {
                 y--;
-            } else if (dx > 0) {
-                x++;
-            } else if (dx < 0) {
-                x--;
+            }
+            // Si dy == 0, on bouge horizontalement
+            if (dy == 0) {
+                if (dx > 0) {
+                    x++;
+                } else if (dx < 0) {
+                    x--;
+                }
             }
         }
         

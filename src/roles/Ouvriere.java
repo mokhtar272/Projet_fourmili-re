@@ -145,9 +145,9 @@ public class Ouvriere extends Role {
         int hauteur = fourmiliere.getDimension().height;
         
         boolean dansNid = pos.x >= posFourmiliere.x && 
-                         pos.x <= posFourmiliere.x + largeur &&
+                         pos.x < posFourmiliere.x + largeur &&
                          pos.y >= posFourmiliere.y && 
-                         pos.y <= posFourmiliere.y + hauteur;
+                         pos.y < posFourmiliere.y + hauteur;
         
         fourmi.setDansLaFourmiliere(dansNid);
     }
