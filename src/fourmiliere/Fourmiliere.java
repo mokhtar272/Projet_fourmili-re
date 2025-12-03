@@ -18,6 +18,9 @@ public class Fourmiliere {
 	private Point pos;
 	private Dimension dim;
 	
+	// Gestion des stocks de nourriture
+	private double stockNourriture; // en mg
+	
 	public Point getPos() {
 		return pos;
 	}
@@ -30,6 +33,7 @@ public class Fourmiliere {
 		this.population = new ArrayList<>();
 		this.pos = pos;
 		this.dim = new Dimension(80,80);
+		this.stockNourriture = 0.0;
 	}
 
 	public void ponte(Fourmi oeuf) {
@@ -38,6 +42,30 @@ public class Fourmiliere {
 	
 	public void setReine(Fourmi reine) {
 		population.add(reine);
+	}
+	
+	/**
+	 * Ajoute de la nourriture au stock
+	 */
+	public void ajouterNourritureStock(double quantite) {
+		this.stockNourriture += quantite;
+	}
+	
+	/**
+	 * Retire de la nourriture du stock
+	 * @return la quantité effectivement retirée
+	 */
+	public double retirerNourritureStock(double quantite) {
+		double quantiteRetiree = Math.min(quantite, stockNourriture);
+		this.stockNourriture -= quantiteRetiree;
+		return quantiteRetiree;
+	}
+	
+	/**
+	 * Retourne le stock de nourriture disponible
+	 */
+	public double getStockNourriture() {
+		return stockNourriture;
 	}
 	
 	public void etapeDeSimulation(ContexteDeSimulation contexte) {

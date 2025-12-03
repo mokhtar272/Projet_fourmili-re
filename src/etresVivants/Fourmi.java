@@ -28,10 +28,24 @@ public class Fourmi extends Individu {
 	private Random random = new Random();
 	private int age;
 	
+	// Gestion de la chasse et des proies
+	private Proie proieTransportee;
+	private int tempsHorsFourmiliere; // en étapes de simulation
+	private double energie; // Énergie restante (correspond à la nourriture consommée)
+	private boolean dansLaFourmiliere;
+	
+	// Constantes
+	private static final int TEMPS_MAX_HORS_FOURMILIERE = 600; // 10-12h = 600 étapes (si 1 étape = 1 minute)
+	private static final double CONSOMMATION_QUOTIDIENNE_RATIO = 1.0 / 3.0; // 1/3 du poids par jour
+	
 	public Fourmi(Point point) {
 		this.setAge(0);
 		this.setEtat(new Oeuf());
 		this.setPos(point);
+		this.proieTransportee = null;
+		this.tempsHorsFourmiliere = 0;
+		this.energie = 1.0; // Commence avec énergie pleine
+		this.dansLaFourmiliere = true;
 	}
 
 	public int getDureeDeVie() {
@@ -89,68 +103,117 @@ public class Fourmi extends Individu {
      */
     public void deposerPheromone(Terrain terrain, TypePheromone type) {
         Point pos = getPos();
-        terrain.deposerPheromone(pos.x, pos.y, type,100);
-    }
-
-    /**
-     * Déplacement pondéré selon la présence de phéromones
-     */
-    public void deplacer(Terrain terrain) {
-        Point pos = getPos();
-        List<Point> candidats = new ArrayList<>();
-        List<Float> poids = new ArrayList<>();
-
-        int[][] deltas = {{0,1},{1,0},{0,-1},{-1,0}}; // Haut, Droite, Bas, Gauche
-
-        for (int[] d : deltas) {
-            int nx = pos.x + d[0];
-            int ny = pos.y + d[1];
-            if (nx >= 0 && nx < terrain.getDimension().width && ny >= 0 && ny < terrain.getDimension().height) {
-                candidats.add(new Point(nx, ny));
-                float p = 1.0f; // poids de base
-                if (terrain.presencePheromone(nx, ny, TypePheromone.EXPLORATION)) p += 3.0f;
-                if (terrain.presencePheromone(nx, ny, TypePheromone.PROIE)) p += 2.0f;
-                poids.add(p);
-            }
-        }
-
-        // Choix aléatoire pondéré
-        float total = 0;
-        for (float f : poids) total += f;
-        float r = random.nextFloat() * total;
-        for (int i = 0; i < candidats.size(); i++) {
-            r -= poids.get(i);
-            if (r <= 0) { setPos(candidats.get(i)); return; }
-        }
-
-        // Si quelque chose échoue, se déplacer vers le premier candidat
-        setPos(candidats.get(0));
+        terrain.deposerPheromone(pos.x, pos.y, type, 100);
     }
 	
 	public void etapeDeSimulation(ContexteDeSimulation contexte) {
 		super.etapeDeSimulation(contexte);
 		this.evolution();
 		this.etat.etapeDeSimulation(contexte);
-		//--------------------------------------------
-		if (etat instanceof Adulte) {
-            Terrain terrain = contexte.getTerrain();
-
-            // Déplacement
-            deplacer(terrain);
-
-            // Déposer phéromone exploration
-            deposerPheromone(terrain, TypePheromone.EXPLORATION);
-
-            // Déposer phéromone proie si la fourmi transporte une proie
-            if (aProie()) deposerPheromone(terrain, TypePheromone.PROIE);
-        }
-    }
+	}
 
     /**
-     * Méthode temporaire pour savoir si la fourmi transporte une proie
+     * Vérifie si la fourmi transporte une proie
      */
-    private boolean aProie() {
-        return false; // TODO: implémenter selon ta gestion réelle des proies
+    public boolean aProie() {
+        return proieTransportee != null;
+    }
+    
+    /**
+     * La fourmi capture une proie
+     */
+    public void capturerProie(Proie proie) {
+        this.proieTransportee = proie;
+        proie.tuer();
+    }
+    
+    /**
+     * La fourmi dépose sa proie dans la fourmilière
+     */
+    public Proie deposerProie() {
+        Proie proie = this.proieTransportee;
+        this.proieTransportee = null;
+        return proie;
+    }
+    
+    /**
+     * Retourne la proie transportée
+     */
+    public Proie getProieTransportee() {
+        return proieTransportee;
+    }
+    
+    /**
+     * Gestion du temps hors fourmilière
+     */
+    public void incrementerTempsHorsFourmiliere() {
+        if (!dansLaFourmiliere) {
+            tempsHorsFourmiliere++;
+        }
+    }
+    
+    public void resetTempsHorsFourmiliere() {
+        tempsHorsFourmiliere = 0;
+    }
+    
+    public int getTempsHorsFourmiliere() {
+        return tempsHorsFourmiliere;
+    }
+    
+    public boolean estDansLaFourmiliere() {
+        return dansLaFourmiliere;
+    }
+    
+    public void setDansLaFourmiliere(boolean dansLaFourmiliere) {
+        this.dansLaFourmiliere = dansLaFourmiliere;
+        if (dansLaFourmiliere) {
+            resetTempsHorsFourmiliere();
+        }
+    }
+    
+    /**
+     * Gestion de l'énergie et de la nourriture
+     */
+    public double getEnergie() {
+        return energie;
+    }
+    
+    public void setEnergie(double energie) {
+        this.energie = Math.max(0, Math.min(1.0, energie));
+    }
+    
+    public void consommerNourriture(double quantite) {
+        this.energie += quantite / getPoids();
+        this.energie = Math.min(1.0, this.energie);
+    }
+    
+    /**
+     * Vérifie si la fourmi meurt par épuisement ou manque de nourriture
+     * @return true si la fourmi meurt
+     */
+    public boolean verifierEpuisement() {
+        // Mort par temps trop long hors fourmilière
+        if (tempsHorsFourmiliere >= TEMPS_MAX_HORS_FOURMILIERE) {
+            return true;
+        }
+        
+        // Mort par manque d'énergie
+        if (energie <= 0) {
+            return true;
+        }
+        
+        return false;
+    }
+    
+    /**
+     * Diminue l'énergie quotidienne
+     */
+    public void diminuerEnergie() {
+        if (etat instanceof Adulte) {
+            // Une fourmi consomme 1/3 de son poids par jour
+            double consommation = CONSOMMATION_QUOTIDIENNE_RATIO / 24.0; // Par heure (approximativement)
+            this.energie -= consommation;
+        }
     }
 	
 	/**

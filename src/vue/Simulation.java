@@ -45,8 +45,8 @@ public class Simulation {
         this.vuesProies = new ArrayList<>();
         
         System.out.println("╔════════════════════════════════════════════════════╗");
-        System.out.println("║      SIMULATION DE FOURMILIÈRE - PHASE 2          ║");
-        System.out.println("║   Déplacements graphiques + Proies                ║");
+        System.out.println("║      SIMULATION DE FOURMILIÈRE - PHASE 3          ║");
+        System.out.println("║   Système de chasse et gestion de nourriture      ║");
         System.out.println("╚════════════════════════════════════════════════════╝");
         System.out.println();
     }
@@ -134,13 +134,17 @@ public class Simulation {
         // Affichage selon configuration
         if (AFFICHER_BILAN_COURT && jourSimulation % FREQUENCE_BILAN_COURT == 0) {
             bilan.afficherBilanCourt(jourSimulation);
-            
+            // Affiche les stocks de nourriture
+            System.out.printf("      | Stock nourriture: %.2f mg | Proies vivantes: %d%n",
+                             fourmiliereActive.getStockNourriture(),
+                             terrain.getNombreProiesVivantes());
           
         }
         
         if (AFFICHER_BILAN_DETAILLE && jourSimulation % FREQUENCE_BILAN_DETAILLE == 0) {
             bilan.afficherBilan(jourSimulation);
             afficherStatistiquesProies();
+            afficherStatistiquesNourriture();
         }
         
         // Condition d'arrêt : plus de nymphes (désactivée pour la phase 2)
@@ -166,6 +170,15 @@ public class Simulation {
         System.out.println("  Insectes         : " + bilan.howMany("Proie_INSECTE"));
         System.out.println("  Araignées        : " + bilan.howMany("Proie_ARAIGNEE"));
         System.out.println("  Larves d'insectes: " + bilan.howMany("Proie_LARVE_INSECTE"));
+        System.out.println();
+    }
+    
+    /**
+     * Affiche les statistiques de nourriture
+     */
+    private void afficherStatistiquesNourriture() {
+        System.out.println("\n--- Statistiques de nourriture ---");
+        System.out.printf("  Stock actuel     : %.2f mg%n", fourmiliereActive.getStockNourriture());
         System.out.println();
     }
     /**
