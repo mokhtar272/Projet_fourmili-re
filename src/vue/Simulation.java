@@ -168,6 +168,26 @@ public class Simulation {
         System.out.println("  Larves d'insectes: " + bilan.howMany("Proie_LARVE_INSECTE"));
         System.out.println();
     }
+    /**
+     * Affiche un simple bilan des phéromones pour tester
+     */
+    private void afficherPheromones() {
+        Terrain terrain = this.getTerrain();
+        int nbPheroExploration = 0;
+        int nbPheroProie = 0;
+
+        for (int i = 0; i < terrain.getDimension().width; i++) {
+            for (int j = 0; j < terrain.getDimension().height; j++) {
+                if (terrain.presencePheromone(i, j, Terrain.TypePheromone.EXPLORATION))
+                    nbPheroExploration++;
+                if (terrain.presencePheromone(i, j, Terrain.TypePheromone.PROIE))
+                    nbPheroProie++;
+            }
+        }
+
+        System.out.println("Pheromones exploration: " + nbPheroExploration);
+        System.out.println("Pheromones proie       : " + nbPheroProie);
+    }
     
     class GraphicAnimation implements ActionListener {
         final int graphicAnimationDelay = 10; // 10ms entre chaque frame
@@ -189,6 +209,9 @@ public class Simulation {
             // Bilan (tous les jours)
             jourSimulation++;
             calculerEtAfficherBilan();
+         // --- Affichage test phéromones ---
+            afficherPheromones();
+            
         }
         
         public void start() {

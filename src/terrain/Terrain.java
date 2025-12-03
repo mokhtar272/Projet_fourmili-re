@@ -34,6 +34,14 @@ public class Terrain {
     private int compteurEtapes = 0;
     private static final int FREQUENCE_GENERATION = 50; // Toutes les 50 étapes
     
+ // --- Gestion des phéromones ---
+    public enum TypePheromone { EXPLORATION, PROIE }
+    private int[][] pheromoneExploration;
+    private int[][] pheromoneProie;
+    public static final int MAX_INTENSITE = 100;
+    private static final int DISPARITION_PAR_ETAPE = 1;
+    
+    
     public Point getPos() {
         return this.pos;
     }
@@ -51,6 +59,44 @@ public class Terrain {
         this.dim = dim;
         this.proies = new ArrayList<>();
         this.random = new Random();
+        
+     // Initialisation phéromones
+        pheromoneExploration = new int[dim.width][dim.height];
+        pheromoneProie = new int[dim.width][dim.height];
+        for (int i = 0; i < dim.width; i++) {
+            for (int j = 0; j < dim.height; j++) {
+                pheromoneExploration[i][j] = 0;
+                pheromoneProie[i][j] = 0;
+            }
+        }
+    }
+ // --- Phéromones ---
+    public void deposerPheromone(int x, int y, TypePheromone type, int quantite) {
+        if (x < 0 || x >= dim.width || y < 0 || y >= dim.height) return;
+        switch(type) {
+            case EXPLORATION -> pheromoneExploration[x][y] = Math.min(MAX_INTENSITE, pheromoneExploration[x][y] + quantite);
+            case PROIE -> pheromoneProie[x][y] = Math.min(MAX_INTENSITE, pheromoneProie[x][y] + quantite);
+        }
+    }
+
+    public int getIntensitePheromone(int x, int y, TypePheromone type) {
+        if (x < 0 || x >= dim.width || y < 0 || y >= dim.height) return 0;
+        return switch(type) {
+            case EXPLORATION -> pheromoneExploration[x][y];
+            case PROIE -> pheromoneProie[x][y];
+        };
+    }
+    public boolean presencePheromone(int x, int y, TypePheromone type) {
+        return getIntensitePheromone(x, y, type) > 0;
+    }
+
+    private void disparitionPheromones() {
+        for (int i = 0; i < dim.width; i++) {
+            for (int j = 0; j < dim.height; j++) {
+                pheromoneExploration[i][j] = Math.max(0, pheromoneExploration[i][j] - DISPARITION_PAR_ETAPE);
+                pheromoneProie[i][j] = Math.max(0, pheromoneProie[i][j] - DISPARITION_PAR_ETAPE);
+            }
+        }
     }
     
     /**
@@ -189,5 +235,8 @@ public class Terrain {
         
         // Met à jour toutes les proies
         mettreAJourProies(contexte);
+        
+     // Disparition progressive des phéromones
+        disparitionPheromones();
     }
 }
