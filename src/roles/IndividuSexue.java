@@ -7,10 +7,16 @@ import java.util.Random;
 
 import etresVivants.Sexe;
 import vue.ContexteDeSimulation;
-
+/**
+ * Représente un individu sexué (mâle ou femelle) destiné à la reproduction
+ * Ces individus sont produits à la fin de l'été pour former de nouvelles colonies
+ */
 public class IndividuSexue extends Role {
 	private Sexe sexe;
-	
+	/**
+     * Constructeur initialisant un individu sexué avec un sexe aléatoire
+     * Distribution : 50% de femelles, 50% de mâles
+     */
 	
 	public IndividuSexue() {
 		super();
@@ -34,7 +40,10 @@ public class IndividuSexue extends Role {
 	public void setSexe(Sexe sexe) {
 		this.sexe = sexe;
 	}
-
+	/**
+     * Exécute une étape de simulation pour un individu sexué
+     * @param contexte Contexte de simulation actuel
+     */
 	@Override
 	public void etapeDeSimulation(ContexteDeSimulation contexte) {
 	}

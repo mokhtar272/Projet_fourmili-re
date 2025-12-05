@@ -12,8 +12,6 @@ public class Proie extends Individu {
 
     private boolean vivante;
     private Random random;
-
-    // Vitesse de déplacement (pixels par étape)
     private static final int VITESSE_DEPLACEMENT = 2;
 
     /**
@@ -24,8 +22,7 @@ public class Proie extends Individu {
         this.vivante = true;
         this.random = new Random();
 
-        // Poids fixe ou léger aléatoire
-        this.setPoids(2.0 + random.nextDouble() * 1.0); // ex : entre 2 et 3 mg
+        this.setPoids(2.0 + random.nextDouble() * 1.0);
     }
 
     public boolean estVivante() {

@@ -5,7 +5,8 @@ import java.awt.Dimension;
 import etresVivants.Proie;
 
 /**
- * Vue d'une proie unique (pas de types)
+ * Vue graphique d'une proie individuelle
+ * La taille visuelle est proportionnelle au poids réel de la proie
  */
 public class VueProie extends VueElement {
 
@@ -18,17 +19,18 @@ public class VueProie extends VueElement {
         initialiserAffichage();
     }
 
+    /**
+     * Initialise les propriétés d'affichage de la proie
+     */
     private void initialiserAffichage() {
-        // Couleur unique
-        Color couleur = new Color(34, 139, 34); // Vert
+      
+        Color couleur = new Color(34, 139, 34); 
 
         if (!proie.estVivante()) {
             couleur = new Color(128, 128, 128, 150);
         }
 
         this.setBackground(couleur);
-
-        // Taille proportionnelle au poids
         int taille = (int)(proie.getPoids() * 1.5) + 3;
         this.setDimension(new Dimension(taille, taille));
 
@@ -37,7 +39,9 @@ public class VueProie extends VueElement {
 
         this.setLocation(proie.getPos());
     }
-
+    /**
+     * Met à jour la vue pour refléter l'état actuel de la proie
+     */
     @Override
     public void redessine() {
         this.setLocation(proie.getPos());

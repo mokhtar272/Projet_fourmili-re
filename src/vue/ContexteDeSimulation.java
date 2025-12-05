@@ -8,6 +8,7 @@ public class ContexteDeSimulation {
 	Simulation sim;
 	Fourmiliere fourmiliere;
 	Individu individu;
+	Terrain terrain;
 	
 	public ContexteDeSimulation(Simulation sim) {
 		this.sim = sim;
@@ -35,6 +36,10 @@ public class ContexteDeSimulation {
 	
 	public void setIndividu(Individu infividu) {
 		this.individu = infividu;
+	}
+
+	public void setTerrain(Terrain terrain) {
+		this.terrain=terrain;		
 	}
 
 }

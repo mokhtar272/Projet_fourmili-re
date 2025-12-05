@@ -6,16 +6,21 @@ import java.awt.Dimension;
 
 import vue.ContexteDeSimulation;
 import vue.VueIndividu;
-
+/**
+ * État Nymphe : stade de métamorphose
+ * Durée : environ 7-10 jours avant émergence en adulte
+ * Caractéristiques : immobile, ne se nourrit pas, en transformation
+ */
 public class Nymphe extends Etat{
 
 	@Override
 	public void etapeDeSimulation(ContexteDeSimulation contexte) {
 	}
 
-	public void initialise(VueIndividu vue ) {
-		vue.setBackground(Color.pink);
-		vue.setDimension(new Dimension(5, 5));
+	@Override
+	public void initialise(VueIndividu vue) {
+	    vue.setBackground(Color.ORANGE);
+	    vue.setDimension(new Dimension(3, 3));
 	}
 	
 	@Override
