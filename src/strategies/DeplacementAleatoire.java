@@ -24,27 +24,25 @@ public class DeplacementAleatoire implements StrategieDeplacement {
         int x = fourmi.getPos().x;
         int y = fourmi.getPos().y;
         
-        // Direction aléatoire (4 directions)
         int direction = random.nextInt(4);
         int nouveauX = x;
         int nouveauY = y;
         
         switch (direction) {
-            case 0: // Haut
+            case 0: 
                 nouveauY = y - 1;
                 break;
-            case 1: // Droite
+            case 1: 
                 nouveauX = x + 1;
                 break;
-            case 2: // Bas
+            case 2:
                 nouveauY = y + 1;
                 break;
-            case 3: // Gauche
+            case 3: 
                 nouveauX = x - 1;
                 break;
         }
         
-        // Vérifie si la nouvelle position est dans le territoire
         Point centre = new Point(
             fourmiliere.getPos().x + fourmiliere.getDimension().width / 2,
             fourmiliere.getPos().y + fourmiliere.getDimension().height / 2
@@ -55,7 +53,6 @@ public class DeplacementAleatoire implements StrategieDeplacement {
         if (distance <= RAYON_TERRITOIRE) {
             return new Point(nouveauX, nouveauY);
         } else {
-            // Si hors territoire, retourne position actuelle
             return new Point(x, y);
         }
     }

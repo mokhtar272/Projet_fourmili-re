@@ -78,8 +78,7 @@ public class FourmiliereTest {
     
     @Test
     public void testConsommerPlusQueDisponible() {
-        // Vider le stock et ajouter seulement 30mg
-        fourmiliere.getStock().consommer(100000); // Vider
+        fourmiliere.getStock().consommer(100000); 
         fourmiliere.ajouterNourriture(30.0);
         
         double consomme = fourmiliere.consommerNourriture(50.0);
@@ -113,14 +112,12 @@ public class FourmiliereTest {
     
     @Test
     public void testCompterOeufs() {
-        // Ajouter des œufs
         for (int i = 0; i < 5; i++) {
             Fourmi oeuf = new Fourmi(new Point(260 + i, 260));
             oeuf.setEtat(new Oeuf());
             fourmiliere.ponte(oeuf);
         }
         
-        // La méthode compterOeufs n'existe pas, mais on peut utiliser le bilan
         Bilan bilan = new Bilan();
         fourmiliere.bilan(bilan);
         
@@ -129,7 +126,6 @@ public class FourmiliereTest {
     
     @Test
     public void testCompterLarves() {
-        // Ajouter des larves
         for (int i = 0; i < 3; i++) {
             Fourmi larve = new Fourmi(new Point(260 + i, 260));
             larve.setEtat(new Larve());
@@ -142,7 +138,6 @@ public class FourmiliereTest {
     
     @Test
     public void testCompterNymphes() {
-        // Ajouter des nymphes
         for (int i = 0; i < 4; i++) {
             Fourmi nymphe = new Fourmi(new Point(260 + i, 260));
             nymphe.setEtat(new Nymphe());

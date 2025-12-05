@@ -16,16 +16,14 @@ import vue.ContexteDeSimulation;
  */
 public class Ouvriere extends Role {
     
-    private static final int DISTANCE_DETECTION = 80; // AUGMENTÉ pour détecter plus loin
-    private int cooldownLog = 0;
-
+    private static final int DISTANCE_DETECTION = 80; 
     /**
      * Méthode de simulation par défaut (sans stratégie)
      * @param contexte Contexte de simulation actuel
      */
     @Override
     public void etapeDeSimulation(ContexteDeSimulation contexte) {
-        // Version sans stratégie - ne fait rien
+        // Version sans stratégie
     }
     
     /**
@@ -51,12 +49,6 @@ public class Ouvriere extends Role {
                 strategie = new DeplacementVersProie();
                 fourmi.setStrategie(strategie);
 
-
-             if (cooldownLog <= 0) {
-
-                 cooldownLog = 200;
-             }
-             cooldownLog--;
             }
         }
         

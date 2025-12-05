@@ -21,13 +21,11 @@ public class Fourmi extends Individu {
     private int tempsHorsFourmiliere = 0;
     private double besoinNutritionnelJour = 0.66;
     private int compteurEtapes = 0;
-    private static final int ETAPES_PAR_JOUR = 80; // même que Fourmiliere
+    private static final int ETAPES_PAR_JOUR = 80; 
 
     
     private Proie proieTransportee;
-    
-    // Selon le sujet : 10-12h max dehors
-    // 12h × 60 étapes/heure = 720 étapes
+
     private static final int TEMPS_MAX_DEHORS = 720;
     
     public Fourmi(Point point) {
@@ -99,7 +97,6 @@ public class Fourmi extends Individu {
         } else {
             tempsDepuisDernierRepas++;
             
-            // Mort par famine après 2 jours sans manger
             if (tempsDepuisDernierRepas >= 2) {
                 System.out.println("💀 Fourmi morte de faim");
                 mourir();
@@ -124,16 +121,12 @@ public class Fourmi extends Individu {
         } else {
             tempsHorsFourmiliere++;
             
-            
-            
-            // 📌 Vérification distance max
             if (distanceDeLaFourmiliere(contexte) > DISTANCE_MAX) {
                 System.out.println(" Fourmi trop loin de la fourmilière (>200m) : mort");
                 mourir();
                 return;
             }
             
-	            // Mort par épuisement après 12h dehors (720 étapes)
             if (tempsHorsFourmiliere >= getTempsMaxDehors()) {
                 System.out.println(" Fourmi morte d'épuisement (>12h dehors)");
                 mourir();
@@ -171,7 +164,7 @@ public class Fourmi extends Individu {
         compteurEtapes++;
         if (compteurEtapes >= ETAPES_PAR_JOUR) {
             compteurEtapes = 0;
-            this.evolution();     // ⬅ appelée une seule fois par jour
+            this.evolution();     
         }
 
         this.etat.etapeDeSimulation(contexte);
@@ -183,7 +176,7 @@ public class Fourmi extends Individu {
         int fx = contexte.getFourmiliere().getPos().x;
         int fy = contexte.getFourmiliere().getPos().y;
 
-        return this.pos.distance(fx, fy); // distance Euclidienne
+        return this.pos.distance(fx, fy); 
     }
 
     

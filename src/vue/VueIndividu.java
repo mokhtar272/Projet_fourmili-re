@@ -24,7 +24,6 @@ public class VueIndividu extends VueElement {
 	@Override
 	public void redessine() {
 	    this.setLocation(this.individu.getPos());
-	    // 🔄 Rafraîchir l'apparence selon l'état actuel
 	    this.individu.initialise(this);
 	}
 }

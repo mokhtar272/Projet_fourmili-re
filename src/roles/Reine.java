@@ -34,35 +34,25 @@ public class Reine extends Role {
                 positionInitialisee = true;
             }
         }
-
         compteurEtapes++;
-
-
         if (compteurEtapes < ETAPES_PAR_JOUR) return;
 
         compteurEtapes = 0;
 
         Fourmiliere f = contexte.getFourmiliere();
         if (f == null) return;
-
-
         if (f.getStock().getQuantiteDisponible() < 50) {
             return;
         }
-
-
         int nbOeufs = 5 + rand.nextInt(5);
-
         for (int i = 0; i < nbOeufs; i++) {
             int x = f.getPos().x + rand.nextInt(f.getDimension().width);
             int y = f.getPos().y + rand.nextInt(f.getDimension().height);
-
             Fourmi oeuf = new Fourmi(new java.awt.Point(x, y));
             oeuf.setEtat(new Oeuf());
             oeuf.setAge(0);
             oeuf.setDureeDeVie(300 + rand.nextInt(300));
             oeuf.setPoids(1);
-
             f.ponte(oeuf);
             contexte.getSimulation().nouvelIndividu(oeuf);
         }

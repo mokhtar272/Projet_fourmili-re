@@ -38,10 +38,8 @@ public class Simulation {
         this.nouveauTerrain(terrain);
         this.bilan = new Bilan();
         this.vuesProies = new ArrayList<>();
-        
-        System.out.println("╔════════════════════════════════════════════════════╗");
-        System.out.println("║           SIMULATION FOURMILIÈRE FINALE           ║");
-        System.out.println("╚════════════════════════════════════════════════════╝");
+              
+        System.out.println("           SIMULATION FOURMILIÈRE FINALE            ");
         System.out.println();
         System.out.println(" Stratégies de déplacement :");
         System.out.println("  1️ DeplacementAleatoire    : Exploration");
@@ -146,12 +144,12 @@ public class Simulation {
             // Bilan détaillé tous les 10 jours
             if (jourSimulation % 10 == 0) {
                 System.out.println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-                System.out.printf("📊 BILAN DÉTAILLÉ - JOUR %d%n", jourSimulation);
+                System.out.printf(" BILAN DÉTAILLÉ - JOUR %d%n", jourSimulation);
                 System.out.println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
                 
                 // Répartition des rôles adultes
                 if (totalAdultes > 0) {
-                    System.out.println("👥 Répartition des adultes :");
+                    System.out.println("Répartition des adultes :");
                     System.out.printf("   Ouvrières    : %2d (%.1f%%) [Attendu: 60-70%%]%n",
                                     ouvriere, (ouvriere * 100.0 / totalAdultes));
                     System.out.printf("   Soldats      : %2d (%.1f%%) [Attendu: 20-25%%]%n",
@@ -161,25 +159,22 @@ public class Simulation {
                     System.out.printf("   Reine        : %2d%n", reine);
                 }
                 
-                // Stock et récolte
                 System.out.println();
-                System.out.println("🍖 Nourriture :");
+                System.out.println("Nourriture :");
                 System.out.printf("   Stock actuel : %.0f mg%n", stock);
                 System.out.printf("   Récolté total: %.0f mg (%.1f mg/jour)%n",
                                 recolte, recolte / jourSimulation);
                 
-                // Phéromones et proies
                 System.out.println();
-                System.out.println("🔴 Environnement :");
+                System.out.println(" Environnement :");
                 System.out.printf("   Phéromones   : %d cases marquées%n", 
                                 terrain.getNombrePheromones());
                 System.out.printf("   Proies vivantes : %d%n", 
                                 terrain.getNombreProiesVivantes());
                 
-                // Décès
                 if (morts > 0) {
                     System.out.println();
-                    System.out.printf("💀 Décès cumulés : %d fourmis%n", morts);
+                    System.out.printf(" Décès cumulés : %d fourmis%n", morts);
                 }
                 
                 System.out.println();
@@ -190,7 +185,6 @@ public class Simulation {
     class GraphicAnimation implements ActionListener {
         
         public void actionPerformed(ActionEvent e) {
-            // Mise à jour graphique
             Component[] views = Simulation.this.space.getComponents();
             for (int i = 0; i < views.length; i++) {
                 Component c = views[i];
@@ -199,17 +193,11 @@ public class Simulation {
                     next.mettreAJourVue();
                 }
             }
-            
-            // Simulation
             terrain.etapeDeSimulation(new ContexteDeSimulation(Simulation.this));
-            
-            // Compte les jours (80 étapes = 1 jour)
             etapeSimulation++;
             if (etapeSimulation % 80 == 0) {
                 jourSimulation++;
             }
-            
-            // Stats quotidiennes
             afficherStatsQuotidiennes();
         }
         

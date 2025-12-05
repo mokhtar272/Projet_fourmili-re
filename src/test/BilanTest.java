@@ -146,7 +146,6 @@ public class BilanTest {
         bilan.incr("Ouvriere", 5);
         bilan.incr("Reine", 1);
         
-        // Tester que l'affichage ne plante pas
         try {
             bilan.afficherBilan(1);
             assertTrue("L'affichage doit fonctionner", true);
@@ -161,7 +160,6 @@ public class BilanTest {
         bilan.incr("Larve", 8);
         bilan.incr("Ouvriere", 12);
         
-        // Tester que l'affichage court ne plante pas
         try {
             bilan.afficherBilanCourt(5);
             assertTrue("L'affichage court doit fonctionner", true);

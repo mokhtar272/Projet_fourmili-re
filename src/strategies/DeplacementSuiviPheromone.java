@@ -28,20 +28,14 @@ public class DeplacementSuiviPheromone implements StrategieDeplacement {
         int x = fourmi.getPos().x;
         int y = fourmi.getPos().y;
         
-        // Récupère les 4 cases adjacentes
         List<CaseAvecScore> casesVoisines = new ArrayList<>();
         
-        // Haut
-        ajouterCase(casesVoisines, x, y - 1, terrain);
-        // Droite
-        ajouterCase(casesVoisines, x + 1, y, terrain);
-        // Bas
-        ajouterCase(casesVoisines, x, y + 1, terrain);
-        // Gauche
-        ajouterCase(casesVoisines, x - 1, y, terrain);
+                ajouterCase(casesVoisines, x, y - 1, terrain);
+                ajouterCase(casesVoisines, x + 1, y, terrain);
+                ajouterCase(casesVoisines, x, y + 1, terrain);
+                ajouterCase(casesVoisines, x - 1, y, terrain);
         
-        // Filtre les cases hors territoire
-        Point centre = new Point(
+                Point centre = new Point(
             fourmiliere.getPos().x + fourmiliere.getDimension().width / 2,
             fourmiliere.getPos().y + fourmiliere.getDimension().height / 2
         );
@@ -55,10 +49,9 @@ public class DeplacementSuiviPheromone implements StrategieDeplacement {
         }
         
         if (casesValides.isEmpty()) {
-            return new Point(x, y); // Reste sur place
+            return new Point(x, y); 
         }
         
-        // Choisit une case selon les probabilités (basées sur les phéromones)
         CaseAvecScore caseChoisie = choisirCaseSelonPheromones(casesValides);
         
         return new Point(caseChoisie.x, caseChoisie.y);
@@ -78,15 +71,12 @@ public class DeplacementSuiviPheromone implements StrategieDeplacement {
      */
     private CaseAvecScore choisirCaseSelonPheromones(List<CaseAvecScore> cases) {
         
-        // Calcule la somme totale (avec bonus pour cases sans phéromone)
         double somme = 0;
         for (CaseAvecScore c : cases) {
-            // Score = phéromone + base (pour ne pas bloquer si pas de phéromone)
-            double score = c.pheromone + 10.0; // Base de 10
+            double score = c.pheromone + 10.0; 
             somme += score;
         }
         
-        // Tire au sort selon les probabilités
         double rand = random.nextDouble() * somme;
         double cumul = 0;
         
@@ -98,7 +88,6 @@ public class DeplacementSuiviPheromone implements StrategieDeplacement {
             }
         }
         
-        // Par défaut, retourne la première case
         return cases.get(0);
     }
     

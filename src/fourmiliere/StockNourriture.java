@@ -7,7 +7,7 @@ package fourmiliere;
  */
 public class StockNourriture {
     
-    private double quantiteDisponible; // en mg
+    private double quantiteDisponible; 
     private double quantiteTotaleRecoltee;
     private double quantiteTotaleConsommee;
     /**
@@ -36,18 +36,15 @@ public class StockNourriture {
      */
     public double consommer(double quantite) {
         if (quantiteDisponible >= quantite) {
-            // Stock suffisant
             quantiteDisponible -= quantite;
             quantiteTotaleConsommee += quantite;
             return quantite;
         } else if (quantiteDisponible > 0) {
-            // Stock insuffisant mais pas vide : consomme ce qui reste
             double consomme = quantiteDisponible;
             quantiteDisponible = 0;
             quantiteTotaleConsommee += consomme;
             return consomme;
         } else {
-            // Stock vide : ne consomme rien
             return 0.0;
         }
     }
@@ -80,8 +77,6 @@ public class StockNourriture {
      * @return Nombre de jours d'autonomie, -1 si aucune consommation
      */
     public int getJoursAutonomie(int nbFourmis, int nbLarves) {
-        // Fourmi : 1/3 de 2mg = 0.66mg/jour
-        // Larve : son poids 6mg/jour
         double consommationJour = (nbFourmis * 0.66) + (nbLarves * 6.0);
         
         if (consommationJour == 0) return -1;

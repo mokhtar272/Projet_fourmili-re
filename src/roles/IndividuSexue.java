@@ -23,7 +23,6 @@ public class IndividuSexue extends Role {
 		Random rand = new Random();
 		int proba = rand.nextInt(100);
 		
-		// 50 % de males et 50 % de femelles
 		if (proba < 50) {
 			this.setSexe(Sexe.femelle);
 		} else {

@@ -19,11 +19,9 @@ public class DeplacementVersProie implements StrategieDeplacement {
     @Override
     public Point prochainDeplacement(Fourmi fourmi, Terrain terrain, Fourmiliere fourmiliere) {
         
-        // Cherche la proie la plus proche VIVANTE et NON CIBLÉE
         proieCible = trouverProiePlusProche(fourmi, terrain);
         
         if (proieCible == null) {
-            // Plus de proie disponible, passe en exploration
             fourmi.setStrategie(new DeplacementAleatoire());
             return fourmi.getPos();
         }
@@ -33,7 +31,6 @@ public class DeplacementVersProie implements StrategieDeplacement {
         int proieX = proieCible.getPos().x;
         int proieY = proieCible.getPos().y;
         
-        // Déplacement RAPIDE vers la proie
         int nouveauX = x;
         int nouveauY = y;
         
@@ -51,16 +48,12 @@ public class DeplacementVersProie implements StrategieDeplacement {
         
         Point nouvellePos = new Point(nouveauX, nouveauY);
         
-        // Dépose phéromone
         terrain.deposerPheromone(nouveauX, nouveauY, 50.0);
         
-        // Vérifie si capture
         double distance = calculerDistance(nouveauX, nouveauY, proieX, proieY);
         if (distance <= DISTANCE_CAPTURE && proieCible.estVivante()) {
-            // CAPTURE !
             proieCible.tuer();
             fourmi.setProieTransportee(proieCible);
-            // Change stratégie : retour
             fourmi.setStrategie(new DeplacementVersFourmiliere());
         }
         
@@ -75,7 +68,6 @@ public class DeplacementVersProie implements StrategieDeplacement {
         double distanceMin = Double.MAX_VALUE;
         
         for (Proie proie : terrain.getProies()) {
-            // IMPORTANT : Ignore les proies mortes !
             if (!proie.estVivante()) {
                 continue;
             }

@@ -120,7 +120,6 @@ public class FourmiTest {
         fourmi.setEtat(new Adulte(new Ouvriere()));
         fourmi.setBesoinNutritionnelJour(0.66);
         
-        // Simuler 3 jours sans manger
         for (int i = 0; i < 3; i++) {
             fourmi.manger(contexte);
         }
@@ -131,9 +130,8 @@ public class FourmiTest {
     @Test
     public void testEpuisementHorsFourmiliere() {
         fourmi.setEtat(new Adulte(new Ouvriere()));
-        fourmi.setPos(new Point(50, 50)); // Loin de la fourmilière
+        fourmi.setPos(new Point(50, 50)); 
         
-        // Simuler 720+ étapes dehors
         for (int i = 0; i < 730; i++) {
             fourmi.verifierEpuisement(contexte);
             if (fourmi.getEtat() instanceof Mort) {
@@ -147,9 +145,8 @@ public class FourmiTest {
     @Test
     public void testPasEpuisementDansFourmiliere() {
         fourmi.setEtat(new Adulte(new Ouvriere()));
-        fourmi.setPos(new Point(260, 260)); // Dans la fourmilière
+        fourmi.setPos(new Point(260, 260)); 
         
-        // Simuler beaucoup d'étapes dans la fourmilière
         for (int i = 0; i < 1000; i++) {
             fourmi.verifierEpuisement(contexte);
         }
@@ -161,7 +158,7 @@ public class FourmiTest {
     @Test
     public void testMortParDistanceMax() {
         fourmi.setEtat(new Adulte(new Ouvriere()));
-        fourmi.setPos(new Point(800, 800)); // Très loin (>400 pixels)
+        fourmi.setPos(new Point(800, 800));
         
         fourmi.verifierEpuisement(contexte);
         
@@ -183,7 +180,7 @@ public class FourmiTest {
         fourmi.setDureeDeVie(1);
         fourmi.setAge(0);
         
-        fourmi.evolution(); // Mort
+        fourmi.evolution(); 
         
         assertNull("La proie doit être perdue à la mort", fourmi.getProieTransportee());
     }

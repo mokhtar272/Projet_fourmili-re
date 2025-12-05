@@ -15,21 +15,16 @@ import vue.VueIndividu;
 public class Mort extends Etat {
     
     private int tempsDepuisMort = 0;
-    private static final int TEMPS_AVANT_DISPARITION = 200; // 2 secondes avant disparition
+    private static final int TEMPS_AVANT_DISPARITION = 200; 
     
     @Override
     public void etapeDeSimulation(ContexteDeSimulation contexte) {
         tempsDepuisMort++;
-        
-        // Après 200 étapes (2 secondes), on pourrait supprimer la fourmi
-        // mais pour l'instant on la laisse visible
     }
     
     public void initialise(VueIndividu vue) {
-        // GRIS FONCÉ pour les morts
 	    vue.setBackground(Color.blue);
         vue.setDimension(new Dimension(5, 5));
-        // Bordure rouge pour bien voir
         vue.setBorder(BorderFactory.createLineBorder(Color.RED, 1));
     }
     

@@ -36,7 +36,7 @@ public class Fourmiliere {
         this.dim = new Dimension(80, 80);
         this.stock = new StockNourriture();               
         this.stock.ajouter(50000.0);
-        System.out.println("Fourmilière créée avec stock initial de 500mg");
+        System.out.println("Fourmilière créée avec stock initial de 50000mg");
     }
     
     public void ponte(Fourmi oeuf) {
@@ -52,7 +52,6 @@ public class Fourmiliere {
      */
     public void ajouterNourriture(double quantite) {
         this.stock.ajouter(quantite);
-        // Print seulement toutes les 5 proies pour éviter spam
         if (quantite > 0 && stock.getQuantiteTotaleRecoltee() % 25 < quantite) {
             System.out.printf("Stock: %.0fmg (+%.1fmg)%n", 
                             stock.getQuantiteDisponible(), quantite);
@@ -78,7 +77,6 @@ public class Fourmiliere {
             fourmi.etapeDeSimulation(contexte);
         }
         
-        // Consommation quotidienne
         compteurEtapes++;
         if (compteurEtapes >= ETAPES_PAR_JOUR) {
             compteurEtapes = 0;
